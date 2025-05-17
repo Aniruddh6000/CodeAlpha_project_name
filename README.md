@@ -12,3 +12,5 @@ A basic Java-based desktop application that allows users to perform simple banki
 - Java
 - Swing (JFrame, JButton, JLabel, JOptionPane)
 
+## Added README for Banking App
+
