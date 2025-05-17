@@ -1,83 +1,76 @@
-// Project no.3 of CodeAlpha
-import java.util.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
 
-public class TravelPlanner {
-    static Scanner scanner = new Scanner(System.in);
+public class TravelPlannerGUI extends JFrame {
+    private ArrayList<String> destinations = new ArrayList<>();
+    private JTextField destinationField;
+
+    public TravelPlannerGUI() {
+        setTitle("Travel Planner");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new GridLayout(5, 1));
+
+        JLabel label = new JLabel("Welcome to Travel Planner", SwingConstants.CENTER);
+        add(label);
+
+        destinationField = new JTextField();
+        destinationField.setHorizontalAlignment(JTextField.CENTER);
+        add(destinationField);
+
+        JButton addBtn = new JButton("Add Destination");
+        JButton viewBtn = new JButton("View Plan");
+        JButton clearBtn = new JButton("Clear Plan");
+        JButton exitBtn = new JButton("Exit");
+
+        add(addBtn);
+        add(viewBtn);
+        add(clearBtn);
+        add(exitBtn);
+
+        addBtn.addActionListener(e -> addDestination());
+        viewBtn.addActionListener(e -> viewPlan());
+        clearBtn.addActionListener(e -> clearPlan());
+        exitBtn.addActionListener(e -> System.exit(0));
+
+        setVisible(true);
+    }
+
+    private void addDestination() {
+        String destination = destinationField.getText().trim();
+        if (!destination.isEmpty()) {
+            destinations.add(destination);
+            destinationField.setText("");
+            showMessage("Added: " + destination);
+        } else {
+            showMessage("Please enter a destination.");
+        }
+    }
+
+    private void viewPlan() {
+        if (destinations.isEmpty()) {
+            showMessage("Your plan is empty.");
+        } else {
+            StringBuilder plan = new StringBuilder("Your Travel Plan:\n");
+            for (int i = 0; i < destinations.size(); i++) {
+                plan.append((i + 1)).append(". ").append(destinations.get(i)).append("\n");
+            }
+            showMessage(plan.toString());
+        }
+    }
+
+    private void clearPlan() {
+        destinations.clear();
+        showMessage("Travel plan cleared.");
+    }
+
+    private void showMessage(String msg) {
+        JOptionPane.showMessageDialog(this, msg);
+    }
 
     public static void main(String[] args) {
-        System.out.println("--- Travel Planner ---\n");
-        List<TravelDestination> travelPlan = new ArrayList<>();
-
-        boolean addingDestinations = true;
-        while (addingDestinations) {
-            // Input destination
-            System.out.print("Enter destination: ");
-            String destination = scanner.nextLine();
-
-            // Input travel date
-            System.out.print("Enter travel date (yyyy-mm-dd): ");
-            String date = scanner.nextLine();
-
-            // Input preferences
-            System.out.println("Enter your preferences:");
-            System.out.print("- Preferred mode of transport: ");
-            String transport = scanner.nextLine();
-            System.out.print("- Accommodation type: ");
-            String accommodation = scanner.nextLine();
-            System.out.print("- Estimated budget (USD): ");
-            double budget = scanner.nextDouble();
-            scanner.nextLine(); // Consume newline
-
-            // Add destination details to the plan
-            travelPlan.add(new TravelDestination(destination, date, transport, accommodation, budget));
-
-            // Ask if the user wants to add another destination
-            System.out.print("Do you want to add another destination? (yes/no): ");
-            String response = scanner.nextLine();
-            if (!response.equalsIgnoreCase("yes")) {
-                addingDestinations = false;
-            }
-        }
-
-        // Display travel plan
-        System.out.println("\n--- Your Travel Plan ---\n");
-        double totalBudget = 0;
-        for (TravelDestination td : travelPlan) {
-            System.out.println(td);
-            totalBudget += td.getBudget();
-        }
-
-        System.out.println("\nTotal Estimated Budget: " + totalBudget + " USD");
-        System.out.println("\nThank you for using the Travel Planner!");
-    }
-}
-
-// Class to represent a travel destination
-class TravelDestination {
-    private String destination;
-    private String date;
-    private String transport;
-    private String accommodation;
-    private double budget;
-
-    public TravelDestination(String destination, String date, String transport, String accommodation, double budget) {
-        this.destination = destination;
-        this.date = date;
-        this.transport = transport;
-        this.accommodation = accommodation;
-        this.budget = budget;
-    }
-
-    public double getBudget() {
-        return budget;
-    }
-
-    @Override
-    public String toString() {
-        return "Destination: " + destination + "\n" +
-                "Date: " + date + "\n" +
-                "Transport: " + transport + "\n" +
-                "Accommodation: " + accommodation + "\n" +
-                "Budget: " + budget + " USD";
+        new TravelPlannerGUI();
     }
 }
