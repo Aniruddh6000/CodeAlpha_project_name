@@ -1,62 +1,71 @@
-// Project no.2 of CodeAlpha
-import java.util.Scanner;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
-public 1class BankingApp {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        double balance = 0.0;
-        boolean running = true;
+public class BankingAppGUI extends JFrame {
+    private double balance = 0.0;
+    private JLabel balanceLabel;
 
-        while (running) {
-            System.out.println("\n--- Banking System ---");
-            System.out.println("1. Deposit");
-            System.out.println("2. Withdraw");
-            System.out.println("3. Check Balance");
-            System.out.println("4. Exit");
-            System.out.print("Choose an option (1-4): ");
+    public BankingAppGUI() {
+        setTitle("Simple Banking App");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new GridLayout(5, 1));
 
-            int choice = scanner.nextInt();
+        balanceLabel = new JLabel("Current Balance: ₹0.0", SwingConstants.CENTER);
+        add(balanceLabel);
 
-            switch (choice) {
-                case 1: // Deposit
-                    System.out.print("Enter the amount to deposit: ");
-                    double depositAmount = scanner.nextDouble();
-                    if (depositAmount > 0) {
-                        balance += depositAmount;
-                        System.out.println("Deposited successfully! Current balance: " + balance);
-                    } else {
-                        System.out.println("Invalid deposit amount. Please try again.");
-                    }
-                    break;
+        JButton depositBtn = new JButton("Deposit Money");
+        JButton withdrawBtn = new JButton("Withdraw Money");
+        JButton checkBtn = new JButton("Check Balance");
+        JButton exitBtn = new JButton("Exit");
 
-                case 2: // Withdraw
-                    System.out.print("Enter the amount to withdraw: ");
-                    double withdrawAmount = scanner.nextDouble();
-                    if (withdrawAmount > 0 && withdrawAmount <= balance) {
-                        balance -= withdrawAmount;
-                        System.out.println("Withdrawn successfully! Current balance: " + balance);
-                    } else if (withdrawAmount > balance) {
-                        System.out.println("Insufficient balance. Withdrawal failed.");
-                    } else {
-                        System.out.println("Invalid withdrawal amount. Please try again.");
-                    }
-                    break;
+        add(depositBtn);
+        add(withdrawBtn);
+        add(checkBtn);
+        add(exitBtn);
 
-                case 3: // Check Balance
-                    System.out.println("Your current balance is: " + balance);
-                    break;
+        depositBtn.addActionListener(e -> depositMoney());
+        withdrawBtn.addActionListener(e -> withdrawMoney());
+        checkBtn.addActionListener(e -> showMessage("Your Balance is ₹" + balance));
+        exitBtn.addActionListener(e -> System.exit(0));
 
-                case 4: // Exit
-                    System.out.println("Thank you for using the banking system. Goodbye!");
-                    running = false;
-                    break;
+        setVisible(true);
+    }
 
-                default:
-                    System.out.println("Invalid option. Please choose a valid option.");
-                    break;
+    private void depositMoney() {
+        String input = JOptionPane.showInputDialog("Enter amount to deposit:");
+        if (input != null && !input.isEmpty()) {
+            double amount = Double.parseDouble(input);
+            balance += amount;
+            updateBalance();
+            showMessage("₹" + amount + " deposited successfully.");
+        }
+    }
+
+    private void withdrawMoney() {
+        String input = JOptionPane.showInputDialog("Enter amount to withdraw:");
+        if (input != null && !input.isEmpty()) {
+            double amount = Double.parseDouble(input);
+            if (amount <= balance) {
+                balance -= amount;
+                updateBalance();
+                showMessage("₹" + amount + " withdrawn successfully.");
+            } else {
+                showMessage("Insufficient balance.");
             }
         }
+    }
 
-        scanner.close();
+    private void updateBalance() {
+        balanceLabel.setText("Current Balance: ₹" + balance);
+    }
+
+    private void showMessage(String message) {
+        JOptionPane.showMessageDialog(this, message);
+    }
+
+    public static void main(String[] args) {
+        new BankingAppGUI();
     }
 }
